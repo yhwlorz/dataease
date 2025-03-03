@@ -88,12 +88,52 @@
 
     <profiles>
 
-        <!-- 单机版 默认就是这个版本 -->
         <profile>
-            <id>standalone</id>
+            <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <profiles.active>default</profiles.active>
+            </properties>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-java</artifactId>
+                    <version>${selenium-java.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.angus</groupId>
+                    <artifactId>angus-mail</artifactId>
+                    <version>${angus-mail.version}</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.eclipse.angus</groupId>
+                            <artifactId>angus-activation</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>com.itextpdf</groupId>
+                    <artifactId>itext7-core</artifactId>
+                    <version>${itextpdf.version}</version>
+                    <type>pom</type>
+                </dependency>
+                <dependency>
+                    <groupId>com.vladsch.flexmark</groupId>
+                    <artifactId>flexmark-all</artifactId>
+                    <version>${flexmark.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>standalone</id>
             <properties>
                 <profiles.active>standalone</profiles.active>
             </properties>

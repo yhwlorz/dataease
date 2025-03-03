@@ -1,6 +1,7 @@
 package io.dataease.utils;
 
 import io.dataease.exception.DEException;
+import io.dataease.result.ResultCode;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
@@ -289,4 +290,48 @@ public class FileUtils {
         }
         return directory.delete();
     }
+
+    public static void validateExcelType(MultipartFile file) throws DEException {
+        // 文件不能为空
+        if (file == null || file.isEmpty()) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "上传文件不能为空！");
+        }
+
+        // 允许的文件后缀
+        List<String> allowedExtensions = Arrays.asList("xlsx", "xls", "csv");
+
+        // 获取文件名
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || !originalFilename.contains(".")) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "上传文件格式不正确！");
+        }
+
+        // 获取文件后缀（忽略大小写）
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+        if (!allowedExtensions.contains(fileExtension)) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "仅支持上传 .xlsx, .xls, .csv 文件！");
+        }
+
+        // 获取文件 MIME 类型
+        String mimeType;
+        try {
+            mimeType = Files.probeContentType(file.getResource().getFile().toPath());
+        } catch (IOException e) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "无法解析文件类型，请检查文件格式！");
+        }
+
+        // 允许的 MIME 类型
+        List<String> allowedMimeTypes = Arrays.asList(
+                "application/vnd.ms-excel",         // .xls
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+                "text/csv",                         // .csv
+                "application/csv"
+        );
+
+        // 校验 MIME 类型
+        if (!allowedMimeTypes.contains(mimeType)) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "文件 MIME 类型不符合要求！");
+        }
+    }
+
 }

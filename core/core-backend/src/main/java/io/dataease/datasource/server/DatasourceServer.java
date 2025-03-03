@@ -770,6 +770,11 @@ public class DatasourceServer implements DatasourceApi {
         if (ObjectUtils.isNotEmpty(datasourceId) && 0L != datasourceId) {
             coreDatasource = dataSourceManage.getCoreDatasource(datasourceId);
         }
+
+        // 校验文件类型
+        FileUtils.validateExcelType(file);
+
+
         ExcelUtils excelUtils = new ExcelUtils();
         ExcelFileData excelFileData = excelUtils.excelSaveAndParse(file);
 
@@ -781,7 +786,7 @@ public class DatasourceServer implements DatasourceApi {
                 List<ExcelSheetData> excelSheetDataList = new ArrayList<>();
                 for (ExcelSheetData sheet : excelFileData.getSheets()) {
                     for (DatasetTableDTO datasetTableDTO : datasetTableDTOS) {
-                        if (excelDataTableName(datasetTableDTO.getTableName()).equals(sheet.getTableName())){
+                        if (excelDataTableName(datasetTableDTO.getTableName()).equals(sheet.getTableName())) {
                             List<TableField> newTableFields = sheet.getFields();
                             datasourceRequest.setTable(datasetTableDTO.getTableName());
                             List<TableField> oldTableFields = ExcelUtils.getTableFields(datasourceRequest);
@@ -802,7 +807,7 @@ public class DatasourceServer implements DatasourceApi {
                 List<DatasetTableDTO> datasetTableDTOS = ExcelUtils.getTables(datasourceRequest);
                 for (ExcelSheetData sheet : excelFileData.getSheets()) {
                     for (DatasetTableDTO datasetTableDTO : datasetTableDTOS) {
-                        if (excelDataTableName(datasetTableDTO.getTableName()).equals(sheet.getTableName())){
+                        if (excelDataTableName(datasetTableDTO.getTableName()).equals(sheet.getTableName())) {
                             sheet.setDeTableName(datasetTableDTO.getTableName());
                         }
                     }

@@ -13,7 +13,7 @@
 All security bugs should be reported to the contact as below:
 
 - wei@fit2cloud.com
-- support@fit2cloud.com
+- support@fit2cloud.com 
 - 400-052-0755
 
 Thanks for your support!

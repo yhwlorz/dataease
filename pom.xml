@@ -10,6 +10,7 @@
 
     <modules>
         <module>sdk</module>
+        <module>core</module>  <!-- 添加 core 模块 -->
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
