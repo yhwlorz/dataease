@@ -436,7 +436,20 @@ public class DatasetGroupManage {
         }
         return dto;
     }
-
+    /**
+     * 获取数据集详情
+     *
+     * @param id
+     * @param type
+     * @return
+     * @throws Exception
+     * 排查记录：
+     *  1、coreDatasetGroup中info是一个json字符串，对应
+     *      @see  List<UnionDTO>，UnionDTO中的currentDs是一个
+     *      @see  DatasetTableDTO，其中的info字段是一个json字符串，包含自定义的sql。而sql的变量替换信息维护在sqlVariableDetails字段中。
+     *      因此，如果遇到 DATAEASE_PATAMS_BI 未被替换的问题，可以检查这两个字段。
+     *
+     */
     public DatasetGroupInfoDTO getDatasetGroupInfoDTO(Long id, String type) throws Exception {
         CoreDatasetGroup coreDatasetGroup = coreDatasetGroupMapper.selectById(id);
         if (coreDatasetGroup == null) {

@@ -58,7 +58,7 @@ public class SqlparserUtils {
         this.userEntity = userEntity;
         try {
             this.removeSysParams = true;
-            removeVariables(sql, ds.getType());
+            removeVariables(sql, ds.getType()); //also has ${项目}
         } catch (Exception e) {
             DEException.throwException(e);
         }
@@ -66,6 +66,8 @@ public class SqlparserUtils {
         if (sql.endsWith(";")) {
             sql = sql.substring(0, sql.length() - 1);
         }
+
+        // 变量替换
         if (StringUtils.isNotEmpty(sqlVariableDetails)) {
             TypeReference<List<SqlVariableDetails>> listTypeReference = new TypeReference<List<SqlVariableDetails>>() {
             };
