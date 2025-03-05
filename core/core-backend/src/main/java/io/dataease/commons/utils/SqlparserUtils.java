@@ -379,7 +379,9 @@ public class SqlparserUtils {
         }
         if (binaryExpression != null) {
             boolean hasSubBinaryExpression = binaryExpression instanceof AndExpression || binaryExpression instanceof OrExpression;
+
             if (!hasSubBinaryExpression && !(binaryExpression.getLeftExpression() instanceof BinaryExpression) && !(binaryExpression.getLeftExpression() instanceof InExpression) && (hasVariable(binaryExpression.getLeftExpression().toString()) || hasVariable(binaryExpression.getRightExpression().toString()))) {
+                //  AND 'DE-BI' = 'DE-BI'
                 stringBuilder.append(handleSubstitutedSql(binaryExpression.toString()));
             } else {
                 expr.accept(getExpressionDeParser(stringBuilder));

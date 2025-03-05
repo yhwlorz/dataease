@@ -31,9 +31,9 @@
         </div>
 
         <div class="auth-root-class">
-          <el-button size="small" type="primary" @click="refresh(pwdForm)">{{
-            t('pblink.sure_bt')
-          }}</el-button>
+          <el-button size="small" type="primary" @click="refresh(pwdForm)"
+            >{{ t('pblink.sure_bt') }}
+          </el-button>
         </div>
       </div>
     </div>
@@ -51,6 +51,7 @@ import { useCache } from '@/hooks/web/useCache'
 import { queryDekey } from '@/api/login'
 import { CustomPassword } from '@/components/custom-password'
 import { useRoute } from 'vue-router'
+
 const route = useRoute()
 const { wsCache } = useCache()
 const appStore = useAppStoreWithOut()
@@ -134,6 +135,7 @@ onMounted(() => {
   height: 100%;
   display: block;
 }
+
 .pwd-wrapper {
   background-color: #f7f8fa;
   height: 100%;
@@ -155,6 +157,7 @@ onMounted(() => {
   -o-flex-wrap: nowrap;
   flex-wrap: nowrap;
 }
+
 .pwd-content {
   width: 450px;
   height: 250px;
@@ -163,12 +166,14 @@ onMounted(() => {
   background-color: #ffffff;
   display: block;
 }
+
 .span-header {
   position: relative;
   margin: 57px auto 0px;
   justify-content: center !important;
   align-items: center !important;
 }
+
 .bi-text {
   max-width: 100%;
   text-align: center;
@@ -183,6 +188,7 @@ onMounted(() => {
   word-break: break-all;
   display: block;
 }
+
 .input-layout {
   width: 200px;
   position: relative;
@@ -190,6 +196,7 @@ onMounted(() => {
   padding: 0;
   display: block;
 }
+
 .input-main {
   width: 192px;
   height: 35px;
@@ -198,12 +205,14 @@ onMounted(() => {
   // border: 1px solid #e8eaed;
   display: block;
 }
+
 .abs-input {
   height: 20px;
   position: relative;
   margin-top: 5px;
   display: block;
 }
+
 .input-text {
   height: 20px;
   line-height: 20px;
@@ -217,6 +226,7 @@ onMounted(() => {
   color: #e65251;
   box-sizing: border-box;
 }
+
 .auth-root-class {
   margin: 15px 0px 5px;
   text-align: center;
