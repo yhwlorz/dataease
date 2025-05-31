@@ -246,6 +246,10 @@ public class XpackShareManage {
         String linkToken = LinkTokenUtil.generate(xpackShare.getCreator(), xpackShare.getResourceId(), xpackShare.getExp(), xpackShare.getPwd(), xpackShare.getOid());
         HttpServletResponse response = ServletUtils.response();
         response.addHeader(AuthConstant.LINK_TOKEN_KEY, linkToken);
+        // fix: 安全漏洞。 如果传递的密码错误，header置为空。避免拦截请求后，header中的密码泄露
+        if (!pwdValid(xpackShare, request.getCiphertext())) {
+            response.setHeader(AuthConstant.LINK_TOKEN_KEY, "");
+        }
         Integer type = xpackShare.getType();
         String typeText = (ObjectUtils.isNotEmpty(type) && type == 1) ? "dashboard" : "dataV";
         TicketValidVO validVO = shareTicketManage.validateTicket(request.getTicket(), xpackShare);

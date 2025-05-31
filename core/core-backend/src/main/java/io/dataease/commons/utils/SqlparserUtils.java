@@ -59,7 +59,7 @@ public class SqlparserUtils {
         this.userEntity = userEntity;
         try {
             this.removeSysParams = true;
-            removeVariables(sql, ds.getType());
+            removeVariables(sql, ds.getType()); //also has ${项目}
         } catch (Exception e) {
             DEException.throwException(e);
         }
@@ -68,6 +68,8 @@ public class SqlparserUtils {
         if (sql.endsWith(";")) {
             sql = sql.substring(0, sql.length() - 1);
         }
+
+        // 变量替换
         if (StringUtils.isNotEmpty(sqlVariableDetails)) {
             TypeReference<List<SqlVariableDetails>> listTypeReference = new TypeReference<List<SqlVariableDetails>>() {
             };
@@ -207,6 +209,7 @@ public class SqlparserUtils {
         if(!hasVariables && !sql.contains(SubstitutedParams)){
             return sql;
         }
+
         Statement statement = CCJSqlParserUtil.parse(tmpSql);
         Select select = (Select) statement;
         if (CollectionUtils.isNotEmpty(select.getWithItemsList())) {
@@ -399,7 +402,9 @@ public class SqlparserUtils {
         }
         if (binaryExpression != null) {
             boolean hasSubBinaryExpression = binaryExpression instanceof AndExpression || binaryExpression instanceof OrExpression;
+
             if (!hasSubBinaryExpression && !(binaryExpression.getLeftExpression() instanceof BinaryExpression) && !(binaryExpression.getLeftExpression() instanceof InExpression) && (hasVariable(binaryExpression.getLeftExpression().toString()) || hasVariable(binaryExpression.getRightExpression().toString()))) {
+                //  AND 'DE-BI' = 'DE-BI'
                 stringBuilder.append(handleSubstitutedSql(binaryExpression.toString()));
             } else {
                 expr.accept(getExpressionDeParser(stringBuilder));

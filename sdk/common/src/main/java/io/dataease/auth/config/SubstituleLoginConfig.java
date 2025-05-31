@@ -14,6 +14,7 @@ import org.springframework.core.io.ResourceLoader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +33,17 @@ public class SubstituleLoginConfig {
     @ConditionalOnMissingBean(name = "loginServer")
     @Bean
     public Map<String, Object> substituleLoginData(ResourceLoader resourceLoader) throws IOException {
+        final String DEFAULTPASSWORD = "Ig4W6L/0e+Z69v";
+
         ObjectMapper objectMapper = new ObjectMapper();
         File jsonFile = new File(jsonFilePath);
         if (!jsonFile.exists()) {
-            pwd = CommonBeanFactory.getBean(Environment.class).getProperty("dataease.default-pwd", "DataEase@123456");
+            pwd = CommonBeanFactory.getBean(Environment.class).getProperty("dataease.default-pwd", DEFAULTPASSWORD);
             modifyPwd(pwd);
         }
-        return objectMapper.readValue(jsonFile, Map.class);
+        //return objectMapper.readValue(jsonFile, Map.class);
+        return Collections.singletonMap("pwd", DEFAULTPASSWORD);
+
     }
 
     public static String getPwd() {
