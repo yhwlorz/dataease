@@ -1,6 +1,10 @@
 package io.dataease.utils;
 
 import io.dataease.exception.DEException;
+import io.dataease.result.ResultCode;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.tika.Tika;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +18,75 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileUtils {
+
+
+    private static final Tika tika = new Tika();
+
+    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("xlsx", "xls", "csv");
+
+    private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList(
+            "application/vnd.ms-excel", // .xls
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+            "text/csv",
+            "application/csv"
+    );
+
+    private static final List<byte[]> EXCEL_MAGIC_NUMBERS = Arrays.asList(
+            new byte[]{(byte) 0xD0, (byte) 0xCF, (byte) 0x11, (byte) 0xE0}, // .xls (OLE2)
+            new byte[]{(byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04}  // .xlsx (ZIP format)
+    );
+
+    /**
+     * 校验上传的 Excel 文件是否符合要求
+     *
+     * @param file 上传的文件
+     * @throws DEException 如果文件不符合要求
+     */
+    public static void validateExcelType(MultipartFile file) throws DEException {
+        // 文件不能为空
+        if (file == null || file.isEmpty()) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "上传文件不能为空！");
+        }
+
+        // 获取文件名并校验扩展名
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "上传文件格式不正确！");
+        }
+
+        String extension = FilenameUtils.getExtension(originalFilename).toLowerCase();
+        if (!ALLOWED_EXTENSIONS.contains(extension)) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "仅支持上传 .xlsx, .xls, .csv 文件！");
+        }
+
+        // 获取 MIME 类型（使用 Tika）
+        String mimeType;
+        try (InputStream inputStream = file.getInputStream()) {
+            mimeType = tika.detect(inputStream);
+        } catch (IOException e) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "无法解析文件类型，请检查文件格式！");
+        }
+
+        // 校验 MIME 类型
+        if (!ALLOWED_MIME_TYPES.contains(mimeType)) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "文件 MIME 类型不符合要求！");
+        }
+
+        // 额外校验 Magic Number（防止伪造扩展名）
+        try (InputStream inputStream = file.getInputStream()) {
+            byte[] fileHeader = new byte[4];
+            IOUtils.readFully(inputStream, fileHeader);
+
+            boolean isValidMagic = EXCEL_MAGIC_NUMBERS.stream()
+                    .anyMatch(magic -> Arrays.equals(magic, fileHeader));
+
+            if (!isValidMagic && !"csv".equals(extension)) {
+                throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "文件格式校验失败，请上传正确的 Excel 文件！");
+            }
+        } catch (IOException e) {
+            throw new DEException(ResultCode.PARAM_TYPE_BIND_ERROR.code(), "文件读取错误，请重新上传！");
+        }
+    }
 
     public static void createIfAbsent(@NonNull Path path) throws IOException {
         Assert.notNull(path, "Path must not be null");
@@ -289,4 +362,7 @@ public class FileUtils {
         }
         return directory.delete();
     }
+
+
+
 }

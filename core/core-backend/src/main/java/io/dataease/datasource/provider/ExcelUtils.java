@@ -277,6 +277,7 @@ public class ExcelUtils {
         } catch (Exception e) {
             DEException.throwException(e);
         }
+
         List<ExcelSheetData> returnSheetDataList = new ArrayList<>();
         returnSheetDataList = excelSheetDataList;
         returnSheetDataList = returnSheetDataList.stream().filter(excelSheetData -> !CollectionUtils.isEmpty(excelSheetData.getFields())).collect(Collectors.toList());

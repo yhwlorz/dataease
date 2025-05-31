@@ -16,5 +16,7 @@ module.exports = {
     arrowParens: 'avoid',     
     // 对象大括号内两边是否加空格 { a:0 }
     bracketSpacing: true,      
+    // ✅ 兼容 Windows 和 Linux 的换行符
+    endOfLine: 'auto',
   }
   

@@ -215,7 +215,7 @@ public class DatasetDataManage {
         }
 
         Map<String, Object> sqlMap = datasetSQLManage.getUnionSQLForEdit(datasetGroupInfoDTO, null);
-        String sql = (String) sqlMap.get("sql");
+        String sql = (String) sqlMap.get("sql"); //debug:sql has DATAEASE_PATAMS_BI
 
         // 获取allFields
         List<DatasetTableFieldDTO> fields = datasetGroupInfoDTO.getAllFields();

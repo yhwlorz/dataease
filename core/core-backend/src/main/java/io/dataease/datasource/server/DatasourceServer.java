@@ -28,6 +28,8 @@ import io.dataease.datasource.manage.DatasourceSyncManage;
 import io.dataease.datasource.manage.EngineManage;
 import io.dataease.datasource.provider.CalciteProvider;
 import io.dataease.datasource.provider.ExcelUtils;
+import io.dataease.datasource.utils.FileUploadValidator;
+import io.dataease.engine.constant.SQLConstants;
 import io.dataease.exception.DEException;
 import io.dataease.extensions.datasource.api.PluginManageApi;
 import io.dataease.extensions.datasource.dto.*;
@@ -43,13 +45,17 @@ import io.dataease.license.utils.LicenseUtil;
 import io.dataease.log.DeLog;
 import io.dataease.model.BusiNodeRequest;
 import io.dataease.model.BusiNodeVO;
+import io.dataease.result.ResultCode;
 import io.dataease.system.dao.auto.entity.CoreSysSetting;
 import io.dataease.system.manage.CoreUserManage;
 import io.dataease.utils.*;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.TriggerKey;
@@ -863,7 +869,9 @@ public class DatasourceServer implements DatasourceApi {
     private static final Integer replace = 0;
     private static final Integer append = 1;
 
-    public ExcelFileData uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("id") long datasourceId, @RequestParam("editType") Integer editType) throws DEException {
+    public ExcelFileData excelUpload(@RequestParam("file") MultipartFile file, @RequestParam("id") long datasourceId, @RequestParam("editType") Integer editType) throws DEException {
+        // 校验文件类型
+        FileUploadValidator.validateExcelType(file);
         CoreDatasource coreDatasource = null;
         if (ObjectUtils.isNotEmpty(datasourceId) && 0L != datasourceId) {
             coreDatasource = dataSourceManage.getCoreDatasource(datasourceId);
