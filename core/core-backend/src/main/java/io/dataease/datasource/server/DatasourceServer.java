@@ -868,7 +868,7 @@ public class DatasourceServer implements DatasourceApi {
     private static final Integer replace = 0;
     private static final Integer append = 1;
 
-    public ExcelFileData excelUpload(@RequestParam("file") MultipartFile file, @RequestParam("id") long datasourceId, @RequestParam("editType") Integer editType) throws DEException {
+    public ExcelFileData uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("id") long datasourceId, @RequestParam("editType") Integer editType) throws DEException {
         // 校验文件类型
         FileUploadValidator.validateExcelType(file);
 
